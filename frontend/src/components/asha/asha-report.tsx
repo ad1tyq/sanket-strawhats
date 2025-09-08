@@ -7,8 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { CloudOff, Minus, Plus, Check } from "lucide-react";
 import Image from "next/image";
 
+// ✅ 1. Define a specific type for the report data
+interface ReportData {
+  village: string;
+  symptoms: string[];
+  caseCount: number;
+  notes: string;
+  timestamp: string;
+  submittedBy: string;
+}
+
+// ✅ 2. Use the new ReportData type instead of 'any'
 interface AshaReportProps {
-  onSubmit: (report: any) => void;
+  onSubmit: (report: ReportData) => void;
   isOffline?: boolean;
 }
 
@@ -34,7 +45,9 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
   const [selectedVillage, setSelectedVillage] = useState("");
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [caseCount, setCaseCount] = useState(1);
-  const [notes, setNotes] = useState("");
+  const [symptomNotes, setSymptomNotes] = useState("");
+  const [otherDetails, setOtherDetails] = useState("");
+
 
   const handleSymptomToggle = (symptomId: string) => {
     setSelectedSymptoms(prev =>
@@ -45,13 +58,14 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
   };
 
   const handleSubmit = () => {
-    const report = {
+    const report: ReportData = {
       village: selectedVillage,
       symptoms: selectedSymptoms,
       caseCount,
-      notes,
+      notes: symptomNotes, // Use the correct state for symptom notes
       timestamp: new Date().toISOString(),
       submittedBy: "ASHA Worker"
+      // Note: otherDetails is not part of the ReportData, but could be added if needed
     };
     onSubmit(report);
   };
@@ -96,21 +110,21 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
           </div>
         </Card>
         
-        {/* Optional Notes */}
+        {/* Symptoms Observed */}
         <Card className="p-4 shadow-card border-0 bg-card">
           <div className="space-y-3">
             <Label className="text-base font-bold">What Symptoms are Reported?</Label>
             <Textarea
-              placeholder="Symptoms oberved..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              placeholder="E.g., Some people are coughing a lot, others have a rash..."
+              value={symptomNotes}
+              onChange={(e) => setSymptomNotes(e.target.value)}
               className="min-h-[100px] bg-input-background border-border text-base resize-none"
             />
           </div>
         </Card>
         
 
-        {/* Symptoms Selection */}
+        {/* Estimated Disease Selection */}
         <Card className="p-4 shadow-card border-0 bg-card">
           <div className="space-y-3">
             <Label className="text-base font-medium">Estimated Disease? (Optional) </Label>
@@ -119,18 +133,18 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
                 <button
                   key={symptom.id}
                   onClick={() => handleSymptomToggle(symptom.id)}
-                  className={`p-4 rounded-lg border-2 transition-all duration-200 ${selectedSymptoms.includes(symptom.id)
+                  className={`p-4 rounded-lg border-2 transition-all duration-200 flex flex-col items-center justify-center ${selectedSymptoms.includes(symptom.id)
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card-secondary"
                     }`}
                 >
-                  <div className="text-center space-y-2">
-                    <div className="text-2xl">{symptom.icon}</div>
-                    <div className="text-sm font-medium text-foreground">{symptom.label}</div>
-                    {selectedSymptoms.includes(symptom.id) && (
-                      <Check className="w-4 h-4 text-primary mx-auto" />
-                    )}
-                  </div>
+                  <div className="text-2xl">{symptom.icon}</div>
+                  <div className="text-sm font-medium text-foreground mt-2">{symptom.label}</div>
+                  {selectedSymptoms.includes(symptom.id) && (
+                    <div className="absolute top-2 right-2">
+                       <Check className="w-4 h-4 text-primary" />
+                    </div>
+                  )}
                 </button>
               ))}
             </div>
@@ -165,14 +179,14 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
           </div>
         </Card>
 
-        {/* Optional Notes */}
+        {/* Other Details */}
         <Card className="p-4 shadow-card border-0 bg-card">
           <div className="space-y-3">
             <Label className="text-base font-medium">Any other details? (Optional)</Label>
             <Textarea
-              placeholder="Additional information about the cases..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              placeholder="E.g., People's eyes are yellow, the river water looks muddy..."
+              value={otherDetails}
+              onChange={(e) => setOtherDetails(e.target.value)}
               className="min-h-[100px] bg-input-background border-border text-base resize-none"
             />
           </div>

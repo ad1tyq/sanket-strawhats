@@ -13,12 +13,10 @@ type View = "home" | "asha-login" | "asha-report" | "asha-success" | "dashboard"
 
 export default function ASHA() {
   const [currentView, setCurrentView] = useState<View>("home");
-  const [ashaLoggedIn, setAshaLoggedIn] = useState(false);
   const [lastReport, setLastReport] = useState<any>(null);
   const [isOffline] = useState(Math.random() > 0.7); // Simulate offline state
 
   const handleAshaLogin = (mobile: string) => {
-    setAshaLoggedIn(true);
     setCurrentView("asha-report");
   };
 
