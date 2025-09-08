@@ -1,9 +1,21 @@
 "use client";
 import React, { useState, useContext, createContext, ReactNode, Dispatch, SetStateAction } from "react";
 
+interface AshaReport {
+    id: number;
+    reportedDate: string;
+    latitude: number;
+    longitude: number;
+    village: string;
+    symptoms: string;
+    estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery';
+    cases: number;
+    otherDetails?: string;
+}
+
 interface ReportContextType {
-    Report: any;
-    setReport: Dispatch<SetStateAction<any>>;
+    Report: AshaReport | null;
+    setReport: Dispatch<SetStateAction<AshaReport | null>>;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -13,7 +25,8 @@ interface ReportProviderProps {
 }
 
 export function ReportProvider({ children }: ReportProviderProps) {
-    const [Report, setReport] = useState<any>(null);
+    // ✅ 3. Use the AshaReport type for the useState hook.
+    const [Report, setReport] = useState<AshaReport | null>(null);
     
     return (
         <ReportContext.Provider value={{ Report, setReport }}>
@@ -25,7 +38,7 @@ export function ReportProvider({ children }: ReportProviderProps) {
 export function useReport() {
     const context = useContext(ReportContext);
     if (context === undefined) {
-        throw new Error("useReport must be used within an ReportProvider");
+        throw new Error("useReport must be used within a ReportProvider");
     }
     return context;
 }

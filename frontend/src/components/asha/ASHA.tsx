@@ -16,7 +16,7 @@ export default function ASHA() {
   const [lastReport, setLastReport] = useState<any>(null);
   const [isOffline] = useState(Math.random() > 0.7); // Simulate offline state
 
-  const handleAshaLogin = (mobile: string) => {
+  const handleAshaLogin = () => {
     setCurrentView("asha-report");
   };
 
