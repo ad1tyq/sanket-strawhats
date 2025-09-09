@@ -1,3 +1,5 @@
+'use client'
+
 import ASHA from "@/components/asha/ASHA";
 export default function Home() {
   return (

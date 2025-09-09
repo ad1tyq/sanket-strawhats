@@ -38,12 +38,12 @@ export default function ASHA() {
           <div className="text-center space-y-4">
             <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto">
               <span className="text-3xl font-semibold text-primary-foreground">
-                <Image src="/bg/medical-symbol.png" alt="main logo" width={150} height={150}/>
+                <Image src="/bg/medical-symbol.png" alt="main logo" width={150} height={150} />
               </span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-center">
-                <Image src="/bg/logo.png" alt="main logo" width={150} height={150}/>
+                <Image src="/bg/logo.png" alt="main logo" width={150} height={150} />
               </div>
               <p className="text-muted-foreground">Smart Community Health Monitoring</p>
             </div>
@@ -52,7 +52,7 @@ export default function ASHA() {
           {/* Interface Selection */}
           <div className="space-y-4">
             <Card className="p-6 shadow-card border-0 bg-card">
-              <button 
+              <button
                 onClick={() => setCurrentView("asha-login")}
                 className="w-full text-left space-y-3 hover:bg-card-secondary cursor-pointer hover:bg-gray-100
                 transition-all duration-300 rounded-lg p-2 -m-2"
@@ -70,7 +70,7 @@ export default function ASHA() {
             </Card>
 
             <Card className="p-6 shadow-card border-0 bg-card">
-              <button 
+              <button
                 onClick={() => setCurrentView("dashboard")}
                 className="w-full text-left space-y-3 hover:bg-card-secondary cursor-pointer hover:bg-gray-100
                 transition-all duration-300 rounded-lg p-2 -m-2"
@@ -109,8 +109,8 @@ export default function ASHA() {
     return (
       <div>
         <div className="absolute top-4 left-4 z-10">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-muted-foreground hover:text-foreground"
           >
@@ -127,8 +127,8 @@ export default function ASHA() {
     return (
       <div>
         <div className="absolute mt-18 top-4 right-4 z-10">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-red-500 hover:text-red-500 duration-300 transition-all hover:bg-red-300
              bg-red-200 cursor-pointer"
@@ -144,8 +144,8 @@ export default function ASHA() {
   // ASHA Success
   if (currentView === "asha-success") {
     return (
-      <AshaSuccess 
-        village={lastReport?.village || "Unknown Village"} 
+      <AshaSuccess
+        village={lastReport?.village || "Unknown Village"}
         isOffline={isOffline}
         onNewReport={handleNewReport}
       />
@@ -157,8 +157,8 @@ export default function ASHA() {
     return (
       <div>
         <div className="absolute top-4 right-4 z-20">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-red-500 hover:text-red-500 duration-300 transition-all hover:bg-red-300
              bg-red-200 cursor-pointer"
