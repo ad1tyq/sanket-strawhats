@@ -11,19 +11,15 @@ import { villages } from "../../../data/villageData";
 
 
 interface ReportData {
-  id: number,
-  reportedDate: string,
-  latitude: number,
-  longitude: number,
-  village: string,
-  symptoms: string,
-  estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery',
-  cases: number,
-  otherDetails?: string,
-}
-
-interface reportCoords {
-  villagecoords: Object,
+  id: number;
+  reportedDate: string;
+  latitude: number;
+  longitude: number;
+  village: string;
+  symptoms: string;
+  estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery';
+  cases: number;
+  otherDetails?: string;
 }
 
 interface AshaReportProps {
@@ -46,7 +42,7 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
   const [caseCount, setCaseCount] = useState(1);
   const [symptomNotes, setSymptomNotes] = useState("");
   const [otherDetails, setOtherDetails] = useState("");
-  const { Report, setReport } = useReport();
+  const { setReport } = useReport(); // Removed unused Report variable
 
   const handleSymptomToggle = (symptomId: string) => {
     setSelectedSymptoms(prev =>
@@ -57,17 +53,17 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
   };
 
   function mapSymptomToDisease(symptomId: string): 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery' | undefined {
-  const symptomToDiseaseMap: Record<string, 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery'> = {
-    'diarrhea': 'diarrhea',
-    'fever': 'typhoid',
-    'vomiting': 'cholera',
-    'jaundice': 'jaundice',
-    'dehydration': 'cholera',
-    'abdominal_pain': 'dysentery'
-  };
-  
-  return symptomToDiseaseMap[symptomId];
-}
+    const symptomToDiseaseMap: Record<string, 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery'> = {
+      'diarrhea': 'diarrhea',
+      'fever': 'typhoid',
+      'vomiting': 'cholera',
+      'jaundice': 'jaundice',
+      'dehydration': 'cholera',
+      'abdominal_pain': 'dysentery'
+    };
+    
+    return symptomToDiseaseMap[symptomId];
+  }
 
   const handleSubmit = () => {
     // Find the selected village
@@ -81,8 +77,8 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
     const villageCoords = selectedVillageData.coordinates[0];
 
     const primaryDisease = selectedSymptoms.length > 0 
-    ? mapSymptomToDisease(selectedSymptoms[0]) 
-    : undefined;
+      ? mapSymptomToDisease(selectedSymptoms[0]) 
+      : undefined;
 
     const report: ReportData = {
       id: Date.now(),
@@ -97,7 +93,7 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
     };
 
     onSubmit(report);
-    console.log("submit : ",report)
+    console.log("submit : ", report);
     setReport(report);
 
     // Reset form
@@ -117,7 +113,6 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
         <div className="flex items-center justify-between p-4">
           <div className="flex justify-center">
             <Image src="/bg/logo.png" alt="main logo" width={100} height={100} />
-
           </div>
 
           {isOffline && (
@@ -162,7 +157,6 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
             />
           </div>
         </Card>
-
 
         {/* Estimated Disease Selection */}
         <Card className="p-4 shadow-card border-0 bg-card">

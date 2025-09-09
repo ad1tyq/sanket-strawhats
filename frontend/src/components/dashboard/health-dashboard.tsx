@@ -19,8 +19,6 @@ const getRisk = (cases: number): { level: 'High' | 'Medium' | 'Low', color: stri
   return { level: 'Low', color: 'border-l-green-400' };
 };
 
-type View = "home" | "asha-login" | "asha-report" | "asha-success" | "dashboard" | "call";
-
 export function HealthDashboard() {
   const [diseaseFilter, setDiseaseFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("recent");
@@ -39,8 +37,8 @@ export function HealthDashboard() {
     getCommunityReports();
   }, [getCommunityReports]);
 
-  // Extract reports from API response
-  const communityReports = data?.reports || [];
+  // Extract reports from API response and memoize to prevent unnecessary re-renders
+  const communityReports = useMemo(() => data?.reports || [], [data?.reports]);
 
   const filteredAndSortedOutbreaks = useMemo(() => {
     let outbreaks = [...communityReports];

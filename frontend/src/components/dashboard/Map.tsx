@@ -3,7 +3,6 @@ import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api"
 import * as React from "react";
 
 // --- Context Imports ---
-import { useRiverLegend } from "@/contexts/RiverLegendContext";
 import { useDiseaseLegend } from "@/contexts/DiseaseLegendContext";
 
 // --- Component Imports ---
@@ -43,7 +42,6 @@ const center = {
 export default function Map({ reports }: MapProps) {
   const [selectedPoint, setSelectedPoint] = React.useState<CommunityReport | null>(null);
   
-  const { RiverLegend: riverSelection } = useRiverLegend();
   const { DiseaseLegend: diseaseSelection } = useDiseaseLegend();
 
   const { isLoaded } = useJsApiLoader({
@@ -90,15 +88,6 @@ export default function Map({ reports }: MapProps) {
       return icons[report.estimatedDisease.toLowerCase() as keyof typeof icons];
     }
     return icons.unknown;
-  }
-
-  const getRiskColor = (riskLevel?: string) => {
-    switch (riskLevel?.toLowerCase()) {
-      case 'high': return '#EF4444'; // red
-      case 'medium': return '#F59E0B'; // yellow
-      case 'low': return '#10B981'; // green
-      default: return '#6B7280'; // gray
-    }
   }
 
   if (!isLoaded) {

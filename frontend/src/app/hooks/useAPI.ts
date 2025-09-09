@@ -2,14 +2,20 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { apiService, AnalysisResult, HealthReport, CommunityReport } from '@/lib/api';
+import { apiService, HealthReport, CommunityReport, AnalysisResult } from '@/lib/api';
+
+// Define a type for the API response data
+interface ApiResponse {
+  reports?: any[];
+  [key: string]: any;
+}
 
 export function useApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
 
-  const callApi = useCallback(async (apiCall: () => Promise<any>) => {
+  const callApi = useCallback(async (apiCall: () => Promise<ApiResponse>) => {
     setLoading(true);
     setError(null);
     try {
@@ -32,7 +38,7 @@ export function useApi() {
     callApi(() => apiService.submitCommunityReport(report)), [callApi]);
 
   const generateHealthActions = useCallback(() => 
-    callApi(() => apiService.generateHealthActions()), [callApi]);
+    callApi(() => apiService.generateHealthActions() as Promise<ApiResponse>), [callApi]);
 
   const getCommunityReports = useCallback(() => 
     callApi(() => apiService.getCommunityReports()), [callApi]);

@@ -17,17 +17,27 @@ export interface CommunityReport {
   longitude: number;
   village: string;
   symptoms: string;
-  estimatedDisease: string;
+  estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery';
   cases: number;
   otherDetails?: string;
 }
 
+// Define pattern interface for better type safety
+export interface PatternDetected {
+  type: string;
+  severity: 'HIGH' | 'MEDIUM' | 'LOW';
+  disease?: string;
+  location?: string;
+  total_cases?: number;
+  description?: string;
+}
+
 export interface AnalysisResult {
   analysis_timestamp: string;
   total_reports: number;
   high_risk_patterns: number;
   moderate_risk_patterns: number;
-  patterns_detected: any[];
+  patterns_detected: PatternDetected[];
   recommended_actions: string[];
   priority_summary: {
     immediate_actions: string[];
@@ -36,18 +46,17 @@ export interface AnalysisResult {
   };
 }
 
-export interface AnalysisResult {
-  analysis_timestamp: string;
-  total_reports: number;
-  high_risk_patterns: number;
-  moderate_risk_patterns: number;
-  patterns_detected: any[];
-  recommended_actions: string[];
-  priority_summary: {
-    immediate_actions: string[];
-    high_priority_actions: string[];
-    standard_actions: string[];
-  };
+// Define outbreak interface
+export interface Outbreak {
+  id?: number;
+  disease: string;
+  location: string;
+  cases: number;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH';
+  reported_date: string;
+  status: 'ACTIVE' | 'CONTAINED' | 'RESOLVED';
+  description?: string;
+  actions_taken?: string[];
 }
 
 class ApiService {
@@ -103,14 +112,14 @@ class ApiService {
   }
 
   // Outbreaks
-  async submitOutbreak(outbreak: any) {
+  async submitOutbreak(outbreak: Outbreak) {
     return this.fetchWithErrorHandling('/submit_outbreak/', {
       method: 'POST',
       body: JSON.stringify(outbreak),
     });
   }
 
-  async getOutbreaks() {
+  async getOutbreaks(): Promise<Outbreak[]> {
     return this.fetchWithErrorHandling('/get_outbreaks/');
   }
 

@@ -1,10 +1,10 @@
 // components/HealthDashboard.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApi } from '@/app/hooks/useAPI';
 import { useReport } from '@/contexts/reportContext';
-import { AnalysisResult } from '@/lib/api';
+import { AnalysisResult, CommunityReport } from '@/lib/api';
 
 export default function HealthAction() {
   const {  
@@ -23,7 +23,7 @@ export default function HealthAction() {
     getCommunityReports();
   }, [getCommunityReports]);
 
-  const handleSubmitReport = async (reportData: any) => {
+  const handleSubmitReport = useCallback(async (reportData: CommunityReport) => {
     try {
       await submitCommunityReport(reportData);
       console.log('Report submitted successfully');
@@ -31,12 +31,12 @@ export default function HealthAction() {
     } catch (err) {
       console.error('Failed to submit report:', err);
     }
-  };
+  }, [submitCommunityReport, getCommunityReports]);
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     try {
-      const result = await generateHealthActions();
+      const result : any= await generateHealthActions();
       setAnalysis(result);
     } catch (err) {
       console.error('Analysis failed:', err);
@@ -49,7 +49,7 @@ export default function HealthAction() {
     if (Report) {
       handleSubmitReport(Report);
     }
-  }, [Report]);
+  }, [Report, handleSubmitReport]);
 
   if (loading) return <div className="p-4">Loading initial data...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
@@ -64,14 +64,6 @@ export default function HealthAction() {
         >
           {isAnalyzing ? 'Analyzing...' : 'Generate Health Actions'}
         </button>
-        
-        {/*<button
-          onClick={getCommunityReports}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
-          disabled={loading}
-        >
-          Refresh Reports
-        </button>*/}
       </div>
 
       {/* Analysis Results Section */}
@@ -170,31 +162,6 @@ export default function HealthAction() {
           </div>
         </div>
       )}
-
-      {/* Current Reports Section */}
-      {/*<div>
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Community Reports</h2>
-        <div className="grid gap-4">
-          {data?.reports?.length > 0 ? (
-            data.reports.map((report: any) => (
-              <div key={report.id} className="p-4 border rounded bg-white shadow-sm">
-                <h3 className="font-semibold text-lg text-gray-800">{report.village}</h3>
-                <p className="text-gray-600">Cases: {report.cases} • {report.estimatedDisease || 'Unknown'}</p>
-                <p className="text-sm text-gray-500 mt-1">{report.symptoms_text}</p>
-                <span className={`inline-block px-2 py-1 rounded text-xs mt-2 ${
-                  report.risk_level === 'High' ? 'bg-red-100 text-red-800' :
-                  report.risk_level === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-green-100 text-green-800'
-                }`}>
-                  {report.risk_level} Risk
-                </span>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 text-center py-8">No reports available. Load sample data or submit a new report.</p>
-          )}
-        </div>
-      </div>*/}
     </div>
   );
 }
