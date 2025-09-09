@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import Image from "next/image";
 import { Monitor, Smartphone } from "lucide-react";
-import { IVRSimulator } from "../ivr/ivrSimulator";
+import { IVRSimulator } from "./ivr/ivrSimulator";
 import { useOnlineStatus } from "@/app/hooks/useOnlineHooks";
 
 interface ReportData {
