@@ -79,6 +79,7 @@ export function IVRSimulator() {
 
     // Set the report in context (this will trigger submission to backend)
     setReport(reportData);
+    console.log("submit: ",reportData);
     
     setStatusMessage('Success! Report submitted via IVR.');
 

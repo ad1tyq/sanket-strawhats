@@ -32,10 +32,11 @@ export function HealthDashboard() {
     getCommunityReports,
   } = useApi();
 
+  console.log("data got from asha: ",data);
   // Load community reports on component mount
   useEffect(() => {
     getCommunityReports();
-  }, [getCommunityReports]);
+  }, []);
 
   // Extract reports from API response and memoize to prevent unnecessary re-renders
   const communityReports = useMemo(
