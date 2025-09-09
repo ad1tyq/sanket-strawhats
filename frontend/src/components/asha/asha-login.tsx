@@ -1,8 +1,6 @@
-// Import necessary hooks and utilities from React and Next.js
 import React, { useState, useEffect, useTransition } from "react";
 import Image from "next/image";
 
-// --- STEP 1: Import Firebase authentication services ---
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { 
   getAuth,
@@ -11,9 +9,7 @@ import {
   ConfirmationResult,
 } from "firebase/auth";
 
-// --- NEW: Firebase Configuration and Initialization ---
-// The firebase configuration is now inside this component to resolve the import error.
-// Using the configuration you provided.
+
 const firebaseConfig = {
   apiKey: "AIzaSyBZaG8YlslypFVsE1Zx6YBV6nwtqH39Z-o",
   authDomain: "otp-auth-82e63.firebaseapp.com",
@@ -24,13 +20,9 @@ const firebaseConfig = {
   measurementId: "G-56YV06YQMV"
 };
 
-// Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
-
-// --- STEP 2: Add TypeScript declaration for the reCAPTCHA verifier ---
-// This tells TypeScript that we expect a 'recaptchaVerifier' property on the global 'window' object.
 declare global {
   interface Window {
     recaptchaVerifier?: RecaptchaVerifier;
@@ -41,9 +33,7 @@ interface AshaLoginProps {
   onLogin: (mobile: string) => void;
 }
 
-// --- Mock UI Components ---
-// The original UI components couldn't be found, so I've replaced them with
-// basic HTML elements styled with the same classNames to preserve the look.
+
 const Card = ({ className, children }: { className?: string; children: React.ReactNode }) => (
     <div className={`bg-white rounded-lg shadow-md ${className}`}>{children}</div>
 );
@@ -67,21 +57,17 @@ const Button = ({ children, variant, ...props }: React.ButtonHTMLAttributes<HTML
 
 
 export function AshaLogin({ onLogin }: AshaLoginProps) {
-  // --- STEP 3: Merge state from both components ---
-  // UI states from original component
+
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"mobile" | "otp">("mobile");
 
-  // Functional states from the OTP logic component
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition(); // For loading states
+  const [isPending, startTransition] = useTransition(); 
 
-  // --- STEP 4: Set up the Firebase reCAPTCHA verifier ---
   useEffect(() => {
-    // This effect runs once on mount to prepare the invisible reCAPTCHA,
-    // which is necessary for Firebase phone auth to work.
+
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
         size: "invisible",
@@ -89,9 +75,8 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
     }
   }, []);
 
-  // --- STEP 5: Implement the OTP request logic ---
   const handleGetOTP = async () => {
-    setError(null); // Clear previous errors
+    setError(null); 
     if (mobile.length !== 10) {
       setError("Please enter a valid 10-digit mobile number.");
       return;
@@ -116,8 +101,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
       } catch (err: any) {
         console.error("Error sending OTP:", err);
 
-        // --- IMPROVED ERROR HANDLING ---
-        // Clear the reCAPTCHA on failure to allow for a clean retry.
         window.recaptchaVerifier?.clear();
 
         let errorMessage = "An unknown error occurred. Please try again.";
@@ -146,7 +129,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
     });
   };
 
-  // --- STEP 6: Implement the OTP verification logic ---
   const handleVerifyOTP = async () => {
     setError(null);
     if (otp.length !== 6) {
@@ -161,7 +143,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
     startTransition(async () => {
         try {
             await confirmationResult.confirm(otp);
-            // On successful verification, call the parent onLogin function
             onLogin(mobile);
         } catch (err) {
             console.error("Error verifying OTP:", err);
@@ -172,11 +153,9 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
-      {/* STEP 7: Add the invisible div required by Firebase for reCAPTCHA */}
       <div id="recaptcha-container" />
 
       <div className="w-full max-w-sm space-y-8">
-        {/* Logo section remains unchanged */}
         <div className="text-center space-y-4">
           <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto">
             <span className="text-3xl font-semibold text-primary-foreground">
@@ -206,7 +185,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
                   className="h-12 bg-gray-100 border-gray-300 text-base"
                 />
               </div>
-              {/* --- STEP 8: Update button to show loading state --- */}
               <Button
                 onClick={handleGetOTP}
                 disabled={mobile.length !== 10 || isPending}
@@ -232,7 +210,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
                 />
               </div>
               <div className="space-y-3">
-                {/* --- Update button to show loading state --- */}
                 <Button
                   onClick={handleVerifyOTP}
                   disabled={otp.length !== 6 || isPending}
@@ -254,7 +231,6 @@ export function AshaLogin({ onLogin }: AshaLoginProps) {
               </div>
             </div>
           )}
-          {/* --- STEP 9: Add a section to display error messages --- */}
           {error && (
               <p className="mt-4 text-sm text-center text-red-500">{error}</p>
           )}
