@@ -22,28 +22,64 @@ export interface CommunityReport {
   otherDetails?: string;
 }
 
-// Define pattern interface for better type safety
+// Base pattern interface
 export interface PatternDetected {
   type: string;
-  severity: 'HIGH' | 'MEDIUM' | 'LOW';
-  disease?: string;
-  location?: string;
-  total_cases?: number;
-  description?: string;
+  severity: 'HIGH' | 'MODERATE' | 'LOW' | 'ELEVATED'; // Added ELEVATED from your backend
+  actions: string[];
+  report_count: number;
+  timestamp: string;
 }
+
+// Specific pattern types
+export interface DiseaseClusterPattern extends PatternDetected {
+  type: 'disease_cluster';
+  disease: string;
+  total_cases: number;
+  affected_locations: string[];
+}
+
+export interface LocationClusterPattern extends PatternDetected {
+  type: 'location_cluster';
+  location: string;
+  total_cases: number;
+  diseases_present: string[];
+  high_risk_reports: number;
+}
+
+export interface HighRiskIndividualPattern extends PatternDetected {
+  type: 'high_risk_individual';
+  disease: string;
+  location: string;
+  cases: number;
+  source_report: string;
+}
+
+export interface NoDataPattern extends PatternDetected {
+  type: 'no_data';
+  message: string;
+}
+
+// Union type for all possible patterns
+export type Pattern = 
+  | DiseaseClusterPattern 
+  | LocationClusterPattern 
+  | HighRiskIndividualPattern 
+  | NoDataPattern;
 
 export interface AnalysisResult {
   analysis_timestamp: string;
   total_reports: number;
   high_risk_patterns: number;
   moderate_risk_patterns: number;
-  patterns_detected: PatternDetected[];
+  patterns_detected: Pattern[];
   recommended_actions: string[];
   priority_summary: {
     immediate_actions: string[];
     high_priority_actions: string[];
     standard_actions: string[];
   };
+  error?: string; // Added error field for error cases
 }
 
 // Define outbreak interface
@@ -57,6 +93,23 @@ export interface Outbreak {
   status: 'ACTIVE' | 'CONTAINED' | 'RESOLVED';
   description?: string;
   actions_taken?: string[];
+}
+
+// Type guard functions for pattern discrimination
+export function isDiseaseClusterPattern(pattern: Pattern): pattern is DiseaseClusterPattern {
+  return pattern.type === 'disease_cluster';
+}
+
+export function isLocationClusterPattern(pattern: Pattern): pattern is LocationClusterPattern {
+  return pattern.type === 'location_cluster';
+}
+
+export function isHighRiskIndividualPattern(pattern: Pattern): pattern is HighRiskIndividualPattern {
+  return pattern.type === 'high_risk_individual';
+}
+
+export function isNoDataPattern(pattern: Pattern): pattern is NoDataPattern {
+  return pattern.type === 'no_data';
 }
 
 class ApiService {

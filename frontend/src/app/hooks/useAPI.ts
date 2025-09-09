@@ -4,23 +4,16 @@
 import { useState, useCallback } from 'react';
 import { apiService, HealthReport, CommunityReport, AnalysisResult } from '@/lib/api';
 
-// Define a type for the API response data
-interface ApiResponse {
-  reports?: any[];
-  [key: string]: any;
-}
-
 export function useApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<ApiResponse | null>(null);
 
-  const callApi = useCallback(async (apiCall: () => Promise<ApiResponse>) => {
+  // Make callApi generic
+  const callApi = useCallback(async <T,>(apiCall: () => Promise<T>): Promise<T> => {
     setLoading(true);
     setError(null);
     try {
       const result = await apiCall();
-      setData(result);
       return result;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -31,31 +24,44 @@ export function useApi() {
     }
   }, []);
 
-  const submitReport = useCallback((report: HealthReport) => 
-    callApi(() => apiService.submitReport(report)), [callApi]);
+  const submitReport = useCallback(
+    (report: HealthReport) => callApi(() => apiService.submitReport(report)),
+    [callApi]
+  );
 
-  const submitCommunityReport = useCallback((report: CommunityReport) => 
-    callApi(() => apiService.submitCommunityReport(report)), [callApi]);
+  const submitCommunityReport = useCallback(
+    (report: CommunityReport) => callApi(() => apiService.submitCommunityReport(report)),
+    [callApi]
+  );
 
-  const generateHealthActions = useCallback(() => 
-    callApi(() => apiService.generateHealthActions() as Promise<ApiResponse>), [callApi]);
+  const generateHealthActions = useCallback(
+    () => callApi<AnalysisResult>(() => apiService.generateHealthActions()),
+    [callApi]
+  );
 
-  const getCommunityReports = useCallback(() => 
-    callApi(() => apiService.getCommunityReports()), [callApi]);
+  const getCommunityReports = useCallback(
+    () => callApi(() => apiService.getCommunityReports()),
+    [callApi]
+  );
 
-  const getOutbreaks = useCallback(() => 
-    callApi(() => apiService.getOutbreaks()), [callApi]);
+  const getOutbreaks = useCallback(
+    () => callApi(() => apiService.getOutbreaks()),
+    [callApi]
+  );
 
-  const loadSampleData = useCallback(() => 
-    callApi(() => apiService.loadSampleData()), [callApi]);
+  const loadSampleData = useCallback(
+    () => callApi(() => apiService.loadSampleData()),
+    [callApi]
+  );
 
-  const getAllData = useCallback(() => 
-    callApi(() => apiService.getAllData()), [callApi]);
+  const getAllData = useCallback(
+    () => callApi(() => apiService.getAllData()),
+    [callApi]
+  );
 
   return {
     loading,
     error,
-    data,
     submitReport,
     submitCommunityReport,
     generateHealthActions,
@@ -63,9 +69,6 @@ export function useApi() {
     getOutbreaks,
     loadSampleData,
     getAllData,
-    reset: () => {
-      setData(null);
-      setError(null);
-    }
+    reset: () => setError(null),
   };
 }
