@@ -1,10 +1,9 @@
-// hooks/useAPI.ts
 'use client';
 
 import { useState, useCallback } from 'react';
 import { apiService, HealthReport, CommunityReport, AnalysisResult } from '@/lib/api';
 
-type ApiResponse = Record<string, any>;
+type ApiResponse = Record<string, unknown>;
 
 export function useApi() {
   const [loading, setLoading] = useState(false);
@@ -16,7 +15,7 @@ export function useApi() {
     setError(null);
     try {
       const result = await apiCall();
-      setData(result as ApiResponse); // 👈 store last result in data
+      setData(result as unknown as ApiResponse);
       return result;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -30,7 +29,7 @@ export function useApi() {
   return {
     loading,
     error,
-    data, // 👈 back again
+    data,
     submitReport: (report: HealthReport) =>
       callApi(() => apiService.submitReport(report)),
     submitCommunityReport: (report: CommunityReport) =>

@@ -38,7 +38,10 @@ export function HealthDashboard() {
   }, [getCommunityReports]);
 
   // Extract reports from API response and memoize to prevent unnecessary re-renders
-  const communityReports = useMemo(() => data?.reports || [], [data?.reports]);
+  const communityReports = useMemo(
+  () => (Array.isArray(data?.reports) ? data.reports : []),
+  [data?.reports]
+);
 
   const filteredAndSortedOutbreaks = useMemo(() => {
     let outbreaks = [...communityReports];
