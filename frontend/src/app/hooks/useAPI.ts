@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { apiService, /*HealthReport,*/ CommunityReport, AnalysisResult } from '@/lib/api';
+import { apiService, CommunityReport, AnalysisResult } from '@/lib/api';
 
 type ApiResponse = Record<string, unknown>;
 
@@ -30,18 +30,13 @@ export function useApi() {
     loading,
     error,
     data,
-    /*submitReport: (report: HealthReport) =>
-      callApi(() => apiService.submitReport(report)),*/
+    // Only include methods that exist in your backend
     submitCommunityReport: (report: CommunityReport) =>
       callApi(() => apiService.submitCommunityReport(report)),
     generateHealthActions: () =>
       callApi<AnalysisResult>(() => apiService.generateHealthActions()),
     getCommunityReports: () =>
       callApi(() => apiService.getCommunityReports()),
-    /*getOutbreaks: () =>
-      callApi(() => apiService.getOutbreaks()),*/
-    /*loadSampleData: () =>
-      callApi(() => apiService.loadSampleData()),*/
     getAllData: () =>
       callApi(() => apiService.getAllData()),
     reset: () => {
