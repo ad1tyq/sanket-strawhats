@@ -9,7 +9,7 @@ export default function SignOut() {
         <div className="relative group inline-flex">
             <button
                 className="bg-white border border-gray-400 text-black transition-all duration-200 hover:bg-gray-100
-                 p-[0.2rem] px-[1rem] rounded-md cursor-pointer"
+                 p-[0.2rem] px-[1rem] rounded-md cursor-pointer w-22 text-sm"
                 onClick={() => signOut()}
             >
                 Sign out

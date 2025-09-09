@@ -8,19 +8,34 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import Image from "next/image";
 import { Monitor, Smartphone } from "lucide-react";
+import { IVRSimulator } from "../ivr/ivrSimulator";
+import { useOnlineStatus } from "@/app/hooks/useOnlineHooks";
 
-type View = "home" | "asha-login" | "asha-report" | "asha-success" | "dashboard";
+interface ReportData {
+  id: number,
+  reportedDate: string,
+  latitude: number,
+  longitude: number,
+  village: string,
+  symptoms: string,
+  estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery',
+  cases: number,
+  otherDetails?: string,
+}
+
+type View = "home" | "asha-login" | "asha-report" | "asha-success" | "dashboard" | "call";
 
 export default function ASHA() {
   const [currentView, setCurrentView] = useState<View>("home");
-  const [lastReport, setLastReport] = useState<any>(null);
-  const [isOffline] = useState(Math.random() > 0.7); // Simulate offline state
+  const [lastReport, setLastReport] = useState<ReportData | null>(null);
+  const isOffline = !useOnlineStatus();
+  
 
   const handleAshaLogin = () => {
     setCurrentView("asha-report");
   };
 
-  const handleReportSubmit = (report: any) => {
+  const handleReportSubmit = (report: ReportData) => {
     setLastReport(report);
     setCurrentView("asha-success");
   };
@@ -38,12 +53,12 @@ export default function ASHA() {
           <div className="text-center space-y-4">
             <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto">
               <span className="text-3xl font-semibold text-primary-foreground">
-                <Image src="/bg/medical-symbol.png" alt="main logo" width={150} height={150}/>
+                <Image src="/bg/medical-symbol.png" alt="main logo" width={150} height={150} />
               </span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-center">
-                <Image src="/bg/logo.png" alt="main logo" width={150} height={150}/>
+                <Image src="/bg/logo.png" alt="main logo" width={150} height={150} />
               </div>
               <p className="text-muted-foreground">Smart Community Health Monitoring</p>
             </div>
@@ -52,7 +67,7 @@ export default function ASHA() {
           {/* Interface Selection */}
           <div className="space-y-4">
             <Card className="p-6 shadow-card border-0 bg-card">
-              <button 
+              <button
                 onClick={() => setCurrentView("asha-login")}
                 className="w-full text-left space-y-3 hover:bg-card-secondary cursor-pointer hover:bg-gray-100
                 transition-all duration-300 rounded-lg p-2 -m-2"
@@ -70,7 +85,7 @@ export default function ASHA() {
             </Card>
 
             <Card className="p-6 shadow-card border-0 bg-card">
-              <button 
+              <button
                 onClick={() => setCurrentView("dashboard")}
                 className="w-full text-left space-y-3 hover:bg-card-secondary cursor-pointer hover:bg-gray-100
                 transition-all duration-300 rounded-lg p-2 -m-2"
@@ -109,8 +124,8 @@ export default function ASHA() {
     return (
       <div>
         <div className="absolute top-4 left-4 z-10">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-muted-foreground hover:text-foreground"
           >
@@ -122,13 +137,14 @@ export default function ASHA() {
     );
   }
 
+
   // ASHA Report Form
   if (currentView === "asha-report") {
     return (
       <div>
         <div className="absolute mt-18 top-4 right-4 z-10">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-red-500 hover:text-red-500 duration-300 transition-all hover:bg-red-300
              bg-red-200 cursor-pointer"
@@ -137,6 +153,7 @@ export default function ASHA() {
           </Button>
         </div>
         <AshaReport onSubmit={handleReportSubmit} isOffline={isOffline} />
+        <IVRSimulator/>
       </div>
     );
   }
@@ -144,8 +161,8 @@ export default function ASHA() {
   // ASHA Success
   if (currentView === "asha-success") {
     return (
-      <AshaSuccess 
-        village={lastReport?.village || "Unknown Village"} 
+      <AshaSuccess
+        village={lastReport?.village || "Unknown Village"}
         isOffline={isOffline}
         onNewReport={handleNewReport}
       />
@@ -157,8 +174,8 @@ export default function ASHA() {
     return (
       <div>
         <div className="absolute top-4 right-4 z-20">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setCurrentView("home")}
             className="text-red-500 hover:text-red-500 duration-300 transition-all hover:bg-red-300
              bg-red-200 cursor-pointer"

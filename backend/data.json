@@ -1,0 +1,19 @@
+{
+    "community_reports": [
+        {
+            "id": 1757374485355,
+            "reportedDate": "2025-09-09T05:04:39.511Z",
+            "timestamp": "2025-09-09T05:04:45.355169",
+            "latitude": 26.32,
+            "longitude": 91.0,
+            "village": "Barpeta Village",
+            "symptoms_text": "bawaa",
+            "symptoms": [],
+            "estimatedDisease": "cholera",
+            "cases": 8,
+            "otherDetails": "",
+            "water_status": "unknown",
+            "risk_level": "Low"
+        }
+    ]
+}

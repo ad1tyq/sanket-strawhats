@@ -8,7 +8,7 @@ interface AshaSuccessProps {
   onNewReport: () => void;
 }
 
-export function AshaSuccess({ village, isOffline = false, onNewReport }: AshaSuccessProps) {
+export function AshaSuccess({ village, isOffline, onNewReport }: AshaSuccessProps) {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-8">
