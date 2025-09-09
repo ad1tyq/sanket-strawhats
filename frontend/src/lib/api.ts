@@ -141,7 +141,7 @@ class ApiService {
   }
 
   // Health Reports
-  async submitReport(report: HealthReport) {
+  /*async submitReport(report: HealthReport) {
     return this.fetchWithErrorHandling('/submit_report/', {
       method: 'POST',
       body: JSON.stringify(report),
@@ -150,7 +150,7 @@ class ApiService {
 
   async getReports() {
     return this.fetchWithErrorHandling('/get_reports/');
-  }
+  }*/
 
   // Community Reports
   async submitCommunityReport(report: CommunityReport) {
@@ -165,7 +165,7 @@ class ApiService {
   }
 
   // Outbreaks
-  async submitOutbreak(outbreak: Outbreak) {
+  /*async submitOutbreak(outbreak: Outbreak) {
     return this.fetchWithErrorHandling('/submit_outbreak/', {
       method: 'POST',
       body: JSON.stringify(outbreak),
@@ -174,7 +174,7 @@ class ApiService {
 
   async getOutbreaks(): Promise<Outbreak[]> {
     return this.fetchWithErrorHandling('/get_outbreaks/');
-  }
+  }*/
 
   // Analysis
   async generateHealthActions(): Promise<AnalysisResult> {
@@ -182,11 +182,11 @@ class ApiService {
   }
 
   // Load sample data
-  async loadSampleData() {
+  /*async loadSampleData() {
     return this.fetchWithErrorHandling('/load_sample_community_data/', {
       method: 'POST',
     });
-  }
+  }*/
 
   // Get all data
   async getAllData() {
