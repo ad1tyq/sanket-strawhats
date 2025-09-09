@@ -6,18 +6,22 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { CloudOff, Minus, Plus, Check } from "lucide-react";
 import Image from "next/image";
+import { useReport } from "@/contexts/reportContext";
+import { villages } from "../../../data/villageData";
 
-// ✅ 1. Define a specific type for the report data
+
 interface ReportData {
+  id: number;
+  reportedDate: string;
+  latitude: number;
+  longitude: number;
   village: string;
-  symptoms: string[];
-  caseCount: number;
-  notes: string;
-  timestamp: string;
-  submittedBy: string;
+  symptoms: string;
+  estimatedDisease?: 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery';
+  cases: number;
+  otherDetails?: string;
 }
 
-// ✅ 2. Use the new ReportData type instead of 'any'
 interface AshaReportProps {
   onSubmit: (report: ReportData) => void;
   isOffline?: boolean;
@@ -32,22 +36,13 @@ const symptoms = [
   { id: "abdominal_pain", label: "Stomach Pain", icon: "😣" }
 ];
 
-const villages = [
-  "Dibrugarh Village",
-  "Tinsukia Village",
-  "Jorhat Village",
-  "Golaghat Village",
-  "Sivasagar Village",
-  "Charaideo Village"
-];
-
-export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
+export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
   const [selectedVillage, setSelectedVillage] = useState("");
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [caseCount, setCaseCount] = useState(1);
   const [symptomNotes, setSymptomNotes] = useState("");
   const [otherDetails, setOtherDetails] = useState("");
-
+  const { setReport } = useReport(); // Removed unused Report variable
 
   const handleSymptomToggle = (symptomId: string) => {
     setSelectedSymptoms(prev =>
@@ -57,17 +52,56 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
     );
   };
 
-  const handleSubmit = () => {
-    const report: ReportData = {
-      village: selectedVillage,
-      symptoms: selectedSymptoms,
-      caseCount,
-      notes: symptomNotes, // Use the correct state for symptom notes
-      timestamp: new Date().toISOString(),
-      submittedBy: "ASHA Worker"
-      // Note: otherDetails is not part of the ReportData, but could be added if needed
+  function mapSymptomToDisease(symptomId: string): 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery' | undefined {
+    const symptomToDiseaseMap: Record<string, 'cholera' | 'typhoid' | 'diarrhea' | 'jaundice' | 'dysentery'> = {
+      'diarrhea': 'diarrhea',
+      'fever': 'typhoid',
+      'vomiting': 'cholera',
+      'jaundice': 'jaundice',
+      'dehydration': 'cholera',
+      'abdominal_pain': 'dysentery'
     };
+    
+    return symptomToDiseaseMap[symptomId];
+  }
+
+  const handleSubmit = () => {
+    // Find the selected village
+    const selectedVillageData = villages.find(v => v.name === selectedVillage);
+
+    if (!selectedVillageData) {
+      console.error("Selected village not found");
+      return;
+    }
+
+    const villageCoords = selectedVillageData.coordinates[0];
+
+    const primaryDisease = selectedSymptoms.length > 0 
+      ? mapSymptomToDisease(selectedSymptoms[0]) 
+      : undefined;
+
+    const report: ReportData = {
+      id: Date.now(),
+      reportedDate: new Date().toISOString(),
+      latitude: villageCoords.lat,
+      longitude: villageCoords.long,
+      village: selectedVillage,
+      symptoms: symptomNotes,
+      estimatedDisease: primaryDisease,
+      cases: caseCount,
+      otherDetails: otherDetails,
+    };
+
     onSubmit(report);
+    console.log("submit : ", report);
+    setReport(report);
+
+    // Reset form
+    setSelectedVillage("");
+    setSelectedSymptoms([]);
+    setCaseCount(1);
+    setSymptomNotes("");
+    setOtherDetails("");
   };
 
   const isFormValid = selectedVillage && selectedSymptoms.length > 0;
@@ -80,8 +114,9 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
           <div className="flex justify-center">
             <Image src="/bg/logo.png" alt="main logo" width={100} height={100} />
           </div>
+
           {isOffline && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <CloudOff className="w-4 h-4" />
               <span>You are offline. Reports will be sent later.</span>
             </div>
@@ -101,15 +136,15 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
               </SelectTrigger>
               <SelectContent>
                 {villages.map((village) => (
-                  <SelectItem key={village} value={village} className="text-base">
-                    {village}
+                  <SelectItem key={village.name} value={village.name} className="text-base">
+                    {village.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </Card>
-        
+
         {/* Symptoms Observed */}
         <Card className="p-4 shadow-card border-0 bg-card">
           <div className="space-y-3">
@@ -122,7 +157,6 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
             />
           </div>
         </Card>
-        
 
         {/* Estimated Disease Selection */}
         <Card className="p-4 shadow-card border-0 bg-card">
@@ -134,15 +168,15 @@ export function AshaReport({ onSubmit, isOffline = false }: AshaReportProps) {
                   key={symptom.id}
                   onClick={() => handleSymptomToggle(symptom.id)}
                   className={`p-4 rounded-lg border-2 transition-all duration-200 flex flex-col items-center justify-center ${selectedSymptoms.includes(symptom.id)
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-card-secondary"
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-card-secondary"
                     }`}
                 >
                   <div className="text-2xl">{symptom.icon}</div>
                   <div className="text-sm font-medium text-foreground mt-2">{symptom.label}</div>
                   {selectedSymptoms.includes(symptom.id) && (
                     <div className="absolute top-2 right-2">
-                       <Check className="w-4 h-4 text-primary" />
+                      <Check className="w-4 h-4 text-primary" />
                     </div>
                   )}
                 </button>
