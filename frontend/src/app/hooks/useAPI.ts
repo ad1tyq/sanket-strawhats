@@ -4,16 +4,19 @@
 import { useState, useCallback } from 'react';
 import { apiService, HealthReport, CommunityReport, AnalysisResult } from '@/lib/api';
 
+type ApiResponse = Record<string, any>;
+
 export function useApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
 
-  // Make callApi generic
   const callApi = useCallback(async <T,>(apiCall: () => Promise<T>): Promise<T> => {
     setLoading(true);
     setError(null);
     try {
       const result = await apiCall();
+      setData(result as ApiResponse); // 👈 store last result in data
       return result;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -24,51 +27,27 @@ export function useApi() {
     }
   }, []);
 
-  const submitReport = useCallback(
-    (report: HealthReport) => callApi(() => apiService.submitReport(report)),
-    [callApi]
-  );
-
-  const submitCommunityReport = useCallback(
-    (report: CommunityReport) => callApi(() => apiService.submitCommunityReport(report)),
-    [callApi]
-  );
-
-  const generateHealthActions = useCallback(
-    () => callApi<AnalysisResult>(() => apiService.generateHealthActions()),
-    [callApi]
-  );
-
-  const getCommunityReports = useCallback(
-    () => callApi(() => apiService.getCommunityReports()),
-    [callApi]
-  );
-
-  const getOutbreaks = useCallback(
-    () => callApi(() => apiService.getOutbreaks()),
-    [callApi]
-  );
-
-  const loadSampleData = useCallback(
-    () => callApi(() => apiService.loadSampleData()),
-    [callApi]
-  );
-
-  const getAllData = useCallback(
-    () => callApi(() => apiService.getAllData()),
-    [callApi]
-  );
-
   return {
     loading,
     error,
-    submitReport,
-    submitCommunityReport,
-    generateHealthActions,
-    getCommunityReports,
-    getOutbreaks,
-    loadSampleData,
-    getAllData,
-    reset: () => setError(null),
+    data, // 👈 back again
+    submitReport: (report: HealthReport) =>
+      callApi(() => apiService.submitReport(report)),
+    submitCommunityReport: (report: CommunityReport) =>
+      callApi(() => apiService.submitCommunityReport(report)),
+    generateHealthActions: () =>
+      callApi<AnalysisResult>(() => apiService.generateHealthActions()),
+    getCommunityReports: () =>
+      callApi(() => apiService.getCommunityReports()),
+    getOutbreaks: () =>
+      callApi(() => apiService.getOutbreaks()),
+    loadSampleData: () =>
+      callApi(() => apiService.loadSampleData()),
+    getAllData: () =>
+      callApi(() => apiService.getAllData()),
+    reset: () => {
+      setData(null);
+      setError(null);
+    },
   };
 }
