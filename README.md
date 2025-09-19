@@ -50,6 +50,14 @@ Mapping                      Google Maps API (@react-google-maps/api)
 
 Backend                      Python (FastAPI)
 
+## 👥 Team - The StrawHats
 
+Aditya Bhardwaj
+
+----
+
+Aayush Nikam
+
+Aryan Pillai
 
 
