@@ -54,7 +54,7 @@ Backend                      Python (FastAPI)
 
 Aditya Bhardwaj
 
-----
+Rohan Eipe
 
 Aayush Nikam
 
