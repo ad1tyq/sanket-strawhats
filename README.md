@@ -12,6 +12,18 @@ In remote villages, it can take up to a week for a local health worker (ASHA) to
 
 Sanket empowers ASHA workers to log symptoms instantly via their phones. Our system analyzes the data in real-time, detects potential outbreaks, and sends automated alerts to health officials, enabling a response before a crisis escalates.
 
+## 🏗️ System Architecture
+
+Our system is composed of four key pillars, creating a seamless flow from data collection to life-saving action:
+
+    Data Input: ASHAs on the ground report data via a Progressive Web App (PWA) or an Interactive Voice Response (IVR) phone call.
+
+    Backend & Database: A Next.js API receives the data, which is stored in a Vercel Postgres database using the Prisma ORM.
+
+    Analysis Engine: A simple but powerful rule-based engine (built into the Next.js API) analyzes incoming data in real-time to assess risk.
+
+    Dashboard & Alerting: A web dashboard for health officials visualizes the risk on a map, and automated SMS alerts are sent via Twilio when a threat is detected.
+
 ## ✨ Key Features
 
 Offline-First PWA: An installable web app for ASHA workers that works perfectly even with no internet connection. Reports are saved locally and synced automatically.
