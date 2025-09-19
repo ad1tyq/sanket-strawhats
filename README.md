@@ -14,15 +14,15 @@ Sanket empowers ASHA workers to log symptoms instantly via their phones. Our sys
 
 ## 🏗️ System Architecture
 
-Our system is composed of four key pillars, creating a seamless flow from data collection to life-saving action:
+### Our system is composed of four key pillars, creating a seamless flow from data collection to life-saving action:
 
-    Data Input: ASHAs on the ground report data via a Progressive Web App (PWA) or an Interactive Voice Response (IVR) phone call.
+Data Input: ASHAs on the ground report data via a Progressive Web App (PWA) or an Interactive Voice Response (IVR) phone call.
 
-    Backend & Database: A Next.js API receives the data, which is stored in a Vercel Postgres database using the Prisma ORM.
+Backend & Database: A Next.js API receives the data, which is stored in a Vercel Postgres database using the Prisma ORM.
 
-    Analysis Engine: A simple but powerful rule-based engine (built into the Next.js API) analyzes incoming data in real-time to assess risk.
+Analysis Engine: A simple but powerful rule-based engine (built into the Next.js API) analyzes incoming data in real-time to assess risk.
 
-    Dashboard & Alerting: A web dashboard for health officials visualizes the risk on a map, and automated SMS alerts are sent via Twilio when a threat is detected.
+Dashboard & Alerting: A web dashboard for health officials visualizes the risk on a map, and automated SMS alerts are sent via Twilio when a threat is detected.
 
 ## ✨ Key Features
 
