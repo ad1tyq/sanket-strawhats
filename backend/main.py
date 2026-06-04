@@ -42,7 +42,7 @@ db = {"community_reports": []}  # Only community reports
 @app.on_event("startup")
 def startup_event():
     global db
-    db = reset_data()
+    db = load_data()
 
 # --- Models ---
 class CommunityReport(BaseModel):
@@ -52,7 +52,7 @@ class CommunityReport(BaseModel):
     longitude: float
     village: str
     symptoms: str
-    estimatedDisease: str
+    estimatedDisease: Optional[str] = "unknown"
     cases: int
     otherDetails: Optional[str] = None
 
@@ -248,7 +248,10 @@ def generate_health_actions():
     from health_analyzer import HealthDataAnalyzer
     try:
         analyzer = HealthDataAnalyzer()
-        analysis = analyzer.generate_comprehensive_analysis()
+        # Pass the local data directly to the analyzer to avoid self-loopback HTTP request issues and port deadlocks
+        analysis = analyzer.generate_comprehensive_analysis({
+            "community_reports": get_community_reports()
+        })
         return analysis
     except Exception as e:
         return {"error": f"Analysis failed: {str(e)}"}

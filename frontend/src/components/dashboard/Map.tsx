@@ -1,5 +1,5 @@
 "use client"
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api"
+import { GoogleMap, useJsApiLoader, MarkerF } from "@react-google-maps/api"
 import * as React from "react";
 
 // --- Context Imports ---
@@ -106,7 +106,7 @@ export default function Map({ reports }: MapProps) {
           center={center}
           zoom={6}
           options={{ 
-            mapId: "HEALTH_MONITORING_MAP", 
+            mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || undefined, 
             disableDefaultUI: false,
             zoomControl: true,
             streetViewControl: false,
@@ -115,7 +115,7 @@ export default function Map({ reports }: MapProps) {
           }}
         >
           {filteredPoints.map((report) => (
-            <Marker
+            <MarkerF
               key={`report-${report.id}`}
               position={{ lat: report.latitude, lng: report.longitude }}
               icon={getIconForReport(report)}

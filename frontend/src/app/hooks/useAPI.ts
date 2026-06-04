@@ -10,6 +10,7 @@ export function useApi() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<ApiResponse | null>(null);
 
+  // Generic API caller
   const callApi = useCallback(async <T,>(apiCall: () => Promise<T>): Promise<T> => {
     setLoading(true);
     setError(null);
@@ -17,26 +18,29 @@ export function useApi() {
       const result = await apiCall();
       setData(result as unknown as ApiResponse);
       return result;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error?.message || 'Unknown error');
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // Community reports API - now uses callApi to avoid duplication
+  const getCommunityReports = useCallback(() => {
+    return callApi(() => apiService.getCommunityReports());
+  }, [callApi]);
+
   return {
     loading,
     error,
     data,
-    // Only include methods that exist in your backend
+    getCommunityReports,
     submitCommunityReport: (report: CommunityReport) =>
       callApi(() => apiService.submitCommunityReport(report)),
     generateHealthActions: () =>
       callApi<AnalysisResult>(() => apiService.generateHealthActions()),
-    getCommunityReports: () =>
-      callApi(() => apiService.getCommunityReports()),
     getAllData: () =>
       callApi(() => apiService.getAllData()),
     reset: () => {

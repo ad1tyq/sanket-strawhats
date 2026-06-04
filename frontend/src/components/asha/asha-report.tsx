@@ -8,6 +8,8 @@ import { CloudOff, Minus, Plus, Check } from "lucide-react";
 import Image from "next/image";
 import { useReport } from "@/contexts/reportContext";
 import { villages } from "../../../data/villageData";
+import { useApi } from "@/app/hooks/useAPI";
+import type { CommunityReport } from "@/lib/api";
 
 
 interface ReportData {
@@ -42,7 +44,8 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
   const [caseCount, setCaseCount] = useState(1);
   const [symptomNotes, setSymptomNotes] = useState("");
   const [otherDetails, setOtherDetails] = useState("");
-  const { setReport } = useReport(); // Removed unused Report variable
+  const { setReport } = useReport();
+  const { submitCommunityReport } = useApi();
 
   const handleSymptomToggle = (symptomId: string) => {
     setSelectedSymptoms(prev =>
@@ -65,7 +68,7 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
     return symptomToDiseaseMap[symptomId];
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Find the selected village
     const selectedVillageData = villages.find(v => v.name === selectedVillage);
 
@@ -91,6 +94,22 @@ export function AshaReport({ onSubmit, isOffline }: AshaReportProps) {
       cases: caseCount,
       otherDetails: otherDetails,
     };
+
+    try {
+      if (typeof window !== "undefined" && !navigator.onLine) {
+        throw new Error("Offline");
+      }
+      await submitCommunityReport(report as CommunityReport);
+      console.log("Report successfully sent to backend.");
+    } catch (err) {
+      console.error("Failed to submit report to backend, queueing offline:", err);
+      // Fallback: save to LocalStorage to resync later
+      if (typeof window !== "undefined") {
+        const offlineQueue = JSON.parse(localStorage.getItem("offlineReportsQueue") || "[]");
+        offlineQueue.push(report);
+        localStorage.setItem("offlineReportsQueue", JSON.stringify(offlineQueue));
+      }
+    }
 
     onSubmit(report);
     console.log("submit : ", report);

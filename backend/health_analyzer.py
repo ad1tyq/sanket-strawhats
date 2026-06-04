@@ -196,8 +196,9 @@ class HealthDataAnalyzer:
         except:
             return False
     
-    def generate_comprehensive_analysis(self) -> Dict[str, Any]:
-        data = self.fetch_all_data()
+    def generate_comprehensive_analysis(self, data: Dict[str, Any] = None) -> Dict[str, Any]:
+        if data is None:
+            data = self.fetch_all_data()
         if not data:
             return {"error": "Could not fetch data from API"}
         

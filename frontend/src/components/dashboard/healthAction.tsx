@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useApi } from "@/app/hooks/useAPI";
-import { useReport } from "@/contexts/reportContext";
 import {
   AnalysisResult,
-  CommunityReport,
   isDiseaseClusterPattern,
   isLocationClusterPattern,
   isHighRiskIndividualPattern,
@@ -16,31 +14,16 @@ export default function HealthAction() {
   const {
     loading,
     error,
-    submitCommunityReport,
     generateHealthActions,
     getCommunityReports,
   } = useApi();
 
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { Report } = useReport();
 
   useEffect(() => {
     getCommunityReports();
   }, [getCommunityReports]);
-
-  const handleSubmitReport = useCallback(
-    async (reportData: CommunityReport) => {
-      try {
-        await submitCommunityReport(reportData);
-        console.log("Report submitted successfully");
-        getCommunityReports();
-      } catch (err) {
-        console.error("Failed to submit report:", err);
-      }
-    },
-    [submitCommunityReport, getCommunityReports]
-  );
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
@@ -54,12 +37,6 @@ export default function HealthAction() {
       setIsAnalyzing(false);
     }
   };
-
-  useEffect(() => {
-    if (Report) {
-      handleSubmitReport(Report);
-    }
-  }, [Report, handleSubmitReport]);
 
   if (loading) return <div className="p-4">Loading initial data...</div>;
   if (error) return <div className="p-4 text-red-500">Error: {error}</div>;

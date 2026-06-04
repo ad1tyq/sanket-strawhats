@@ -1,8 +1,10 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useApi } from "@/app/hooks/useAPI";
 import { AshaLogin } from "./asha-login";
 import { AshaReport } from "./asha-report";
 import { AshaSuccess } from "./asha-success";
+import type { CommunityReport } from "@/lib/api";
 import { HealthDashboard } from "../dashboard/health-dashboard";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -29,7 +31,29 @@ export default function ASHA() {
   const [currentView, setCurrentView] = useState<View>("home");
   const [lastReport, setLastReport] = useState<ReportData | null>(null);
   const isOffline = !useOnlineStatus();
-  
+  const { submitCommunityReport } = useApi();
+
+  useEffect(() => {
+    if (!isOffline && typeof window !== "undefined") {
+      const queueStr = localStorage.getItem("offlineReportsQueue");
+      if (queueStr) {
+        try {
+          const queue = JSON.parse(queueStr);
+          if (Array.isArray(queue) && queue.length > 0) {
+            console.log("Back online! Syncing offline reports...");
+            Promise.all(queue.map((report) => submitCommunityReport(report as CommunityReport)))
+              .then(() => {
+                console.log("All offline reports synced successfully!");
+                localStorage.removeItem("offlineReportsQueue");
+              })
+              .catch((err) => console.error("Failed to sync offline reports:", err));
+          }
+        } catch (e) {
+          console.error("Failed to parse offline reports:", e);
+        }
+      }
+    }
+  }, [isOffline, submitCommunityReport]);
 
   const handleAshaLogin = () => {
     setCurrentView("asha-report");

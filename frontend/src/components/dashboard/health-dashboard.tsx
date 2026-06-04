@@ -36,7 +36,7 @@ export function HealthDashboard() {
   // Load community reports on component mount
   useEffect(() => {
     getCommunityReports();
-  }, []);
+  }, [getCommunityReports]);
 
   // Extract reports from API response and memoize to prevent unnecessary re-renders
   const communityReports = useMemo(
