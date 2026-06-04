@@ -1,0 +1,21 @@
+{
+  "name": "Sanket",
+  "short_name": "Sanket",
+  "description": "Smart Community Health Monitoring",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#007AFF",
+  "icons": [
+    {
+      "src": "/icons/favicon.ico",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

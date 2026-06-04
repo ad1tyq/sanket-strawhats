@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sanket - IIC 2.0 Submission by The StrawHats
 
-## Getting Started
+Sanket is a proactive, accessible, and intelligent early warning system designed to close the critical information gap between rural communities and public health officials, reducing outbreak response time for water-borne diseases from one week to under 24 hours.
 
-First, run the development server:
+Our team, The StrawHats, secured the 4th position nationally and 2nd position at our university in the International Innovation Challenge (IIC) 2.0.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 💡 The Problem: The 7-Day Lag
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+In remote villages, it can take up to a week for a local health worker (ASHA) to manually report a disease outbreak to district officials. By then, a full-blown epidemic is underway.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Our Solution: The 24-Hour Response
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Sanket empowers ASHA workers to log symptoms instantly via their phones. Our system analyzes the data in real-time, detects potential outbreaks, and sends automated alerts to health officials, enabling a response before a crisis escalates.
 
-## Learn More
+## 🏗️ System Architecture
 
-To learn more about Next.js, take a look at the following resources:
+### Our system is composed of four key pillars, creating a seamless flow from data collection to life-saving action:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Data Input: ASHAs on the ground report data via a Progressive Web App (PWA) or an Interactive Voice Response (IVR) phone call.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Backend & Database: A Next.js API receives the data, which is stored in a Vercel Postgres database using the Prisma ORM.
 
-## Deploy on Vercel
+Analysis Engine: A simple but powerful rule-based engine (built into the Next.js API) analyzes incoming data in real-time to assess risk.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Dashboard & Alerting: A web dashboard for health officials visualizes the risk on a map, and automated SMS alerts are sent via Twilio when a threat is detected.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Key Features
+
+Offline-First PWA: An installable web app for ASHA workers that works perfectly even with no internet connection. Reports are saved locally and synced automatically.
+
+IVR (Voice Call) Reporting: A revolutionary feature that allows any ASHA with any basic phone to call a number and submit a report using their keypad, ensuring 100% accessibility.
+
+Real-time GIS Dashboard: A map-based dashboard for health officials to visualize hotspots, track data, and coordinate a rapid response.
+
+Automated SMS Alerts: Instant SMS notifications sent via Twilio to officials when a high-risk situation is detected.
+
+## 🛠️ Tech Stack
+
+Component                    Technology
+
+Frontend & PWA               Next.js (React), Tailwind CSS
+
+Backend API                  Next.js API Routes
+
+Database                     Vercel Postgres + Prisma ORM
+
+Comms (IVR/SMS)              Twilio
+
+Mapping                      Google Maps API (@react-google-maps/api)
+
+Backend                      Python (FastAPI)
+
+## 👥 Team - The StrawHats
+
+Aditya Bhardwaj
+
+Rohan Eipe
+
+Aayush Nikam
+
+Aryan Pillai
+
+
+
