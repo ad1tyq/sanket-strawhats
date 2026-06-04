@@ -1,3 +1,19 @@
 {
-    "community_reports": []
+    "community_reports": [
+        {
+            "id": 1780537246515,
+            "reportedDate": "2026-06-04T07:10:46.440Z",
+            "timestamp": "2026-06-04T07:10:46.515925",
+            "latitude": 27.49,
+            "longitude": 95.36,
+            "village": "Tinsukia Village",
+            "symptoms_text": "fda",
+            "symptoms": [],
+            "estimatedDisease": "diarrhea",
+            "cases": 1,
+            "otherDetails": "",
+            "water_status": "unknown",
+            "risk_level": "Low"
+        }
+    ]
 }
